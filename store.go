@@ -7,7 +7,7 @@ import (
 
 const maxDataSize = 50
 const maxKeyCount = 1000
-const validKeyPattern = `^[a-z_]{1}[a-z0-9-_]{1,15}$`
+var validKeyPattern = regexp.MustCompile(`^[a-z_]{1}[a-z0-9-_]{1,15}$`)
 
 var (
 	StoreFull = errors.New("store is full")
@@ -46,7 +46,7 @@ func (s *InMemoryStore) Set(key string, value []byte) error {
 	if len(value) > maxDataSize {
 		return DataExceedsLimit
 	}
-	if keyValid, _ := regexp.MatchString(validKeyPattern, key); !keyValid {
+	if !validKeyPattern.MatchString(key) {
 		return KeyFormatInvalid
 	}
 
