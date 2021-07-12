@@ -27,7 +27,7 @@ func TestRejectsDuplicateKey(t *testing.T) {
 	store := NewInMemoryStore()
 	store.Set("test", []byte("data"))
 	if store.Set("test", []byte("data")) != KeyExists {
-		t.Error("expected to received key exists error")
+		t.Error("expected to receive key exists error")
 	}
 }
 
@@ -36,7 +36,7 @@ func TestRejectsBodyOverLimit(t *testing.T) {
 	data := make([]byte, maxDataSize + 1)
 	rand.Read(data)
 	if store.Set("key", data) != DataExceedsLimit {
-		t.Error("expected to received data exceeds limit error")
+		t.Error("expected to receive data exceeds limit error")
 	}
 }
 
