@@ -52,17 +52,12 @@ func TestRejectsAllWhenAtCapacity(t *testing.T) {
 	}
 }
 
-func TestSetsKey(t *testing.T) {
+func TestSetsGetsKey(t *testing.T) {
+	data := []byte("data")
 	store := NewInMemoryStore()
-	if store.Set("key", []byte("data")) != nil {
+	if store.Set("key", data) != nil {
 		t.Error("unexpected set error")
 	}
-}
-
-func TestGetsKey(t *testing.T) {
-	store := NewInMemoryStore()
-	data := []byte("data")
-	store.Set("key", data)
 	retrieved, found := store.Get("key")
 	if bytes.Compare(data, retrieved) != 0 || found != true {
 		t.Error("unexpected error getting key")
