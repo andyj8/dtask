@@ -84,19 +84,14 @@ func (h *storeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodPost && setPath.MatchString(r.URL.Path):
 		h.set(w, r)
-		return
 	case r.Method == http.MethodGet && getPath.MatchString(r.URL.Path):
 		h.retrieve(w, r)
-		return
 	case r.Method == http.MethodGet && existsPath.MatchString(r.URL.Path):
 		h.exists(w, r)
-		return
 	case r.Method == http.MethodDelete && removePath.MatchString(r.URL.Path):
 		h.remove(w, r)
-		return
 	default:
 		w.WriteHeader(http.StatusNotFound)
-		return
 	}
 }
 
