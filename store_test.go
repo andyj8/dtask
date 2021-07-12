@@ -68,8 +68,7 @@ func TestRemovesKey(t *testing.T) {
 	store := NewInMemoryStore()
 	store.Set("key", []byte("data"))
 	store.Remove("key")
-	_, found := store.Get("key")
-	if found != false {
+	if _, found := store.Get("key"); found != false {
 		t.Error("expected key to have been removed")
 	}
 }
