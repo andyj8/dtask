@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"regexp"
+	"sync"
 )
 
 const maxDataSize = 50
@@ -19,6 +20,7 @@ var (
 )
 
 type InMemoryStore struct {
+	sync.RWMutex
 	data map[string][]byte
 }
 
@@ -29,17 +31,13 @@ func NewInMemoryStore() *InMemoryStore {
 }
 
 func (s *InMemoryStore) Get(key string) ([]byte, bool) {
+	s.RLock()
+	defer s.RUnlock()
 	value, exists := s.data[key]
 	return value, exists
 }
 
 func (s *InMemoryStore) Set(key string, value []byte) error {
-	if len(s.data) >= maxKeyCount {
-		return StoreFull
-	}
-	if _, exists := s.data[key]; exists {
-		return KeyExists
-	}
 	if len(value) == 0 {
 		return DataIsEmpty
 	}
@@ -50,11 +48,22 @@ func (s *InMemoryStore) Set(key string, value []byte) error {
 		return KeyFormatInvalid
 	}
 
+	s.Lock()
+	defer s.Unlock()
+	if len(s.data) >= maxKeyCount {
+		return StoreFull
+	}
+	if _, exists := s.data[key]; exists {
+		return KeyExists
+	}
 	s.data[key] = value
+
 	return nil
 }
 
 func (s *InMemoryStore) Remove(key string) error {
+	s.Lock()
+	defer s.Unlock()
 	_, exists := s.data[key]
 	if !exists {
 		return KeyNotExist
