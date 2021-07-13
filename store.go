@@ -20,7 +20,7 @@ var (
 )
 
 type InMemoryStore struct {
-	sync.Mutex
+	sync.RWMutex
 	data map[string][]byte
 }
 
@@ -31,8 +31,8 @@ func NewInMemoryStore() *InMemoryStore {
 }
 
 func (s *InMemoryStore) Get(key string) ([]byte, bool) {
-	s.Lock()
-	defer s.Unlock()
+	s.RLock()
+	defer s.RUnlock()
 	value, exists := s.data[key]
 	return value, exists
 }
